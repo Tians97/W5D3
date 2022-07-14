@@ -10,6 +10,18 @@ class Reply
         @parent_id = hash['parent_id']
     end
 
+    def update
+        raise "#{self} not in database" unless self.id
+        QuestionsDatabase.instance.execute(<<-SQL, self.id, self.user_id, self.quesiton_id, self.body, self.partent_id)
+          UPDATE
+            replies
+          SET
+            user_id = ?, question_id = ?, body = ?, parent_id = ?
+          WHERE
+            id = ?
+        SQL
+    end
+
     def author
         User.find_by_id(user_id)
     end

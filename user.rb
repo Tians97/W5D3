@@ -15,6 +15,20 @@ class User
         @lname = hash['lname']
     end
 
+
+    def update
+        raise "#{self} not in database" unless self.id
+        QuestionsDatabase.instance.execute(<<-SQL, self.id, self.fname, self.lname)
+          UPDATE
+            users
+          SET
+            fname = ?, lname = ?
+          WHERE
+            id = ?
+        SQL
+      end
+    def
+
     def authored_questions
         Question.find_by_user_id(self.id)
     end

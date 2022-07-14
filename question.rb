@@ -4,6 +4,8 @@ require_relative 'questions_follows.rb'
 
 class Question
     attr_accessor :id, :title, :body, :user_id
+
+
     def self.most_liked(n=1)
         QuestionLikes.most_liked_questions(n)
     end
@@ -98,5 +100,17 @@ class Question
         @title = hash['title']
         @body = hash['body']
         @user_id = hash['user_id']
+    end
+
+    def update
+        raise "#{self} not in database" unless self.id
+        QuestionsDatabase.instance.execute(<<-SQL, self.id, self.title, self.body, self.user_id)
+          UPDATE
+            questions
+          SET
+            title = ?, body = ?, user_id = ?
+          WHERE
+            id = ?
+        SQL
     end
 end
